@@ -56,6 +56,8 @@ public class Player : MonoBehaviour, IDamageable
 
         health -= amount;
 
+        FindFirstObjectByType<DamageNumberPool>().Spawn(amount, transform.position);
+
         if (flashCoroutine != null) StopCoroutine(flashCoroutine);
         flashCoroutine = StartCoroutine(DamageFlash());
 

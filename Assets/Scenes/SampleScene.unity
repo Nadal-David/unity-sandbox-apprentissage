@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 293e7674a4ce24a55b956d6d6302bfc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlimeGreen
-  maxHealth: 100
+  maxHealth: 30
   moveSpeed: 2
   contactDamage: 10
   aggroRange: 10
@@ -406,7 +406,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -575,7 +575,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.6698113, g: 0.078987174, b: 0.078987174, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2052,6 +2052,7 @@ GameObject:
   - component: {fileID: 1994822954}
   - component: {fileID: 1994822953}
   - component: {fileID: 1994822952}
+  - component: {fileID: 1994822956}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2142,6 +2143,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1994822956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1994822951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48c175bbd13b147279c8257dd65643af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthBarManager
+  healthBarPrefab: {fileID: 7476106227542600886, guid: 0c74bdde38a53407caee1456bb649084, type: 3}
 --- !u!1 &2007387447
 GameObject:
   m_ObjectHideFlags: 0

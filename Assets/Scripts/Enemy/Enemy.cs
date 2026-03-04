@@ -25,7 +25,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     private bool isKnockedBack = false;
     public bool IsKnockedBack => isKnockedBack;
     private bool isDead = false;
-
+    private EnemyHealthBarUI healthBar;
 
     private void Awake()
     {
@@ -41,6 +41,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     {
         player = FindFirstObjectByType<Player>()?.transform;
         health = maxHealth;
+
+        healthBar = EnemyHealthBarManager.Instance.CreateBar(transform);
     }
 
     protected virtual void Update()
@@ -65,12 +67,15 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         damageable.TakeDamage(contactDamage, hitDir);
     }
 
-    public void TakeDamage(int damage, Vector2 hitDirection)
+    public void TakeDamage(int amount, Vector2 hitDirection)
     {
         if (health <= 0) return;
 
-        health -= damage;
+        health -= amount;
 
+        FindFirstObjectByType<DamageNumberPool>().Spawn(amount, transform.position);
+
+        healthBar.SetHealth(health, maxHealth);
         StartCoroutine(ApplyKnockback(hitDirection));
 
         if (flashCoroutine != null) StopCoroutine(flashCoroutine);
@@ -87,6 +92,11 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         if (isDead) return;
         isDead = true;
 
+        if (healthBar != null)
+        {
+            Destroy(healthBar.gameObject);
+        }
+
         StopAllCoroutines();
 
         rb.linearVelocity = Vector2.zero;
@@ -97,7 +107,6 @@ public abstract class Enemy : MonoBehaviour, IDamageable
             col.enabled = false;
 
         Destroy(gameObject);
-
     }
 
     private IEnumerator DamageFlash()
