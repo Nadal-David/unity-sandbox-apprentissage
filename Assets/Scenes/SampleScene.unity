@@ -2053,6 +2053,7 @@ GameObject:
   - component: {fileID: 1994822953}
   - component: {fileID: 1994822952}
   - component: {fileID: 1994822956}
+  - component: {fileID: 1994822957}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2156,6 +2157,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthBarManager
   healthBarPrefab: {fileID: 7476106227542600886, guid: 0c74bdde38a53407caee1456bb649084, type: 3}
+--- !u!114 &1994822957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1994822951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01d802de8035c43f9bba66fd7f6296fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageNumberPool
+  prefab: {fileID: 3883897638582175766, guid: 80481084e26f845ce9d7fae34b6a2f17, type: 3}
+  startAmount: 20
 --- !u!1 &2007387447
 GameObject:
   m_ObjectHideFlags: 0

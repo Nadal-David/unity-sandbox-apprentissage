@@ -1,0 +1,3 @@
+- Regarder pathfinding
+- Créer un spawn
+- Créer une tilemap

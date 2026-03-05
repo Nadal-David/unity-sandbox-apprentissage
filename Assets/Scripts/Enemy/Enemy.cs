@@ -7,6 +7,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     [SerializeField] protected float moveSpeed = 2f;
     [SerializeField] protected int contactDamage = 10;
     [SerializeField] protected float aggroRange = 5f;
+    [SerializeField] float maxChaseDistance = 15f;
 
     [Header("Damage Feedback")]
     [SerializeField] private float damageFlashDuration = 0.15f;
@@ -26,6 +27,9 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     public bool IsKnockedBack => isKnockedBack;
     private bool isDead = false;
     private EnemyHealthBarUI healthBar;
+    protected EnemyState currentState;
+    protected Vector2 spawnPosition;
+    private bool isAggro = false;
 
     private void Awake()
     {
@@ -43,19 +47,34 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         health = maxHealth;
 
         healthBar = EnemyHealthBarManager.Instance.CreateBar(transform);
+        currentState = EnemyState.Idle;
+        spawnPosition = transform.position;
     }
 
     protected virtual void Update()
     {
         if (player == null) return;
-
-        float dist = Vector2.Distance(transform.position, player.position);
-        if (dist > aggroRange) return;
-
         if (isKnockedBack) return;
+
+        float distToPlayer = Vector2.Distance(transform.position, player.position);
+        float distToSpawn = Vector2.Distance(transform.position, spawnPosition);
+
+        if (!isAggro && distToPlayer <= aggroRange && !EnemyState.ReturnToSpawn.Equals(currentState))
+        {
+            isAggro = true;
+            currentState = EnemyState.Chase;
+        }
+
+        // Si trop loin du spawn -> stop aggro
+        if (isAggro && distToSpawn > maxChaseDistance)
+        {
+            isAggro = false;
+            currentState = EnemyState.ReturnToSpawn;
+        }
 
         HandleMovement();
     }
+
     protected abstract void HandleMovement();
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -106,6 +125,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         if (col != null)
             col.enabled = false;
 
+        currentState = EnemyState.Dead;
+
         Destroy(gameObject);
     }
 
@@ -137,5 +158,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, aggroRange);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(spawnPosition, maxChaseDistance);
     }
 }
