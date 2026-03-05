@@ -30,6 +30,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     protected EnemyState currentState;
     protected Vector2 spawnPosition;
     private bool isAggro = false;
+    private EnemySpawnPoint spawnPoint;
 
     private void Awake()
     {
@@ -79,11 +80,11 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
-        if (damageable == null) return;
+        Player player = collision.gameObject.GetComponent<Player>();
+        if (player == null) return;
 
-        Vector2 hitDir = collision.transform.position - transform.position; // ennemi -> player
-        damageable.TakeDamage(contactDamage, hitDir);
+        Vector2 hitDir = collision.transform.position - transform.position;
+        player.TakeDamage(contactDamage, hitDir);
     }
 
     public void TakeDamage(int amount, Vector2 hitDirection)
@@ -127,6 +128,11 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
         currentState = EnemyState.Dead;
 
+        if (spawnPoint != null)
+        {
+            spawnPoint.EnemyDied();
+        }
+
         Destroy(gameObject);
     }
 
@@ -150,6 +156,11 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
         rb.linearVelocity = Vector2.zero; // IMPORTANT
         isKnockedBack = false;
+    }
+
+    public void SetSpawnPoint(EnemySpawnPoint spawner)
+    {
+        spawnPoint = spawner;
     }
 
 
