@@ -8,6 +8,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     [SerializeField] protected int contactDamage = 10;
     [SerializeField] protected float aggroRange = 5f;
     [SerializeField] float maxChaseDistance = 15f;
+    [SerializeField] protected float attackRange = 1f;
+    [SerializeField] protected float attackCooldown = 2f;
 
     [Header("Damage Feedback")]
     [SerializeField] private float damageFlashDuration = 0.15f;
@@ -31,6 +33,9 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     protected Vector2 spawnPosition;
     private bool isAggro = false;
     private EnemySpawnPoint spawnPoint;
+    protected float lastAttackTime;
+    protected bool isAttacking = false;
+    private Animator animator;
 
     private void Awake()
     {
@@ -50,6 +55,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         healthBar = EnemyHealthBarManager.Instance.CreateBar(transform);
         currentState = EnemyState.Idle;
         spawnPosition = transform.position;
+        animator = GetComponent<Animator>();
     }
 
     protected virtual void Update()
@@ -57,9 +63,15 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         if (player == null) return;
         if (isKnockedBack) return;
 
+        if (isAttacking)
+        {
+            HandleMovement();
+            return;
+        }
+
         float distToPlayer = Vector2.Distance(transform.position, player.position);
         float distToSpawn = Vector2.Distance(transform.position, spawnPosition);
-
+        Debug.Log(currentState);
         if (!isAggro && distToPlayer <= aggroRange && !EnemyState.ReturnToSpawn.Equals(currentState))
         {
             isAggro = true;
@@ -73,10 +85,20 @@ public abstract class Enemy : MonoBehaviour, IDamageable
             currentState = EnemyState.ReturnToSpawn;
         }
 
+        if (isAggro && distToPlayer <= attackRange)
+        {
+            currentState = EnemyState.Attack;
+        }
+        // else if (isAggro)
+        // {
+        //     currentState = EnemyState.Chase;
+        // }
+
         HandleMovement();
     }
 
     protected abstract void HandleMovement();
+    protected abstract void Attack();
 
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -163,6 +185,25 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         spawnPoint = spawner;
     }
 
+    protected bool TryAttack()
+    {
+        if (isAttacking) return false;
+        if (Time.time < lastAttackTime + attackCooldown) return false;
+
+        lastAttackTime = Time.time;
+        isAttacking = true;
+
+        animator.SetTrigger("Attack");
+
+        TransformUtils.FaceTarget(transform, player);
+
+        return true;
+    }
+
+    public void OnAttackFinished()
+    {
+        isAttacking = false;
+    }
 
     // --------- DEBUG
     private void OnDrawGizmosSelected()
@@ -172,5 +213,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(spawnPosition, maxChaseDistance);
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

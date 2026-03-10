@@ -12,9 +12,13 @@ public class PlayerHealthUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void Start()
     {
-        player = FindFirstObjectByType<Player>();
-        UpdateHealthBar();
         healthText.gameObject.SetActive(false);
+    }
+
+    public void SetPlayer(Player newPlayer)
+    {
+        player = newPlayer;
+        UpdateHealthBar();
     }
 
     public void UpdateHealthBar()

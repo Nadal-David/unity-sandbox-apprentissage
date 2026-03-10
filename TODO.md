@@ -5,6 +5,7 @@
 - Créer un portail de spawn d'enemy (sprite)
 - Gérer système de spawn avancé avec pool ou autre système pour gérer un grand nombre d'enemy sur une grande map
 - Regarder pathfinding
+- Faire attaque slime
 
 -- PLAYER
 - Créer un spawn (spawn point - code, spawn zone - sprite)

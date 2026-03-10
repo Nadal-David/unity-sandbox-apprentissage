@@ -220,7 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   maxHealth: 100
-  damageCooldown: 1
+  damageCooldown: 0.5
   knockbackForce: 5
   knockbackDuration: 0.2
   damageFlashDuration: 0.15

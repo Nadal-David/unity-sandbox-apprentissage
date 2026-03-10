@@ -103,7 +103,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Die()
     {
-        Debug.Log("Player mort !");
+        Destroy(gameObject);
     }
 
     // UI

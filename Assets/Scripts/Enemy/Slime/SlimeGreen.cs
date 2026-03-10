@@ -7,6 +7,12 @@ public class SlimeGreen : Enemy
     private float wanderTimer;
     private bool isWaiting = false;
 
+    [SerializeField] private float dashSpeed = 6f;
+    [SerializeField] private float dashDistance = 2f;
+
+    private Vector2 dashTarget;
+    private bool isDashing;
+
     protected override void HandleMovement()
     {
         switch (currentState)
@@ -23,9 +29,54 @@ public class SlimeGreen : Enemy
                 Chase();
                 break;
 
+            case EnemyState.Attack:
+                Attack();
+                break;
+
             case EnemyState.ReturnToSpawn:
                 ReturnToSpawn();
                 break;
+        }
+    }
+
+    protected override void Attack()
+    {
+        if (isDashing)
+        {
+            Dash();
+            return;
+        }
+
+        StartDash();
+    }
+
+    private void StartDash()
+    {
+        if (!TryAttack())
+            return;
+
+        Vector2 direction = (player.position - transform.position).normalized;
+
+        float dashLength = Vector2.Distance(transform.position, player.position) + dashDistance;
+
+        dashTarget = (Vector2)transform.position + direction * dashLength;
+        isDashing = true;
+    }
+
+    private void Dash()
+    {
+        Vector2 direction = (dashTarget - (Vector2)transform.position).normalized;
+
+        rb.linearVelocity = direction * dashSpeed;
+
+        float dist = Vector2.Distance(transform.position, dashTarget);
+
+        if (dist < 0.1f)
+        {
+            isDashing = false;
+            rb.linearVelocity = Vector2.zero;
+
+            OnAttackFinished();
         }
     }
 
